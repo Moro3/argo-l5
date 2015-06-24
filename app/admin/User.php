@@ -25,3 +25,21 @@ Admin::model('\User')->title('Users')->as('users-alias-name')->denyCreating(func
 	FormItem::text('name', 'Name');
 	FormItem::text('email', 'Email');
 });
+
+
+Admin::model('App\Contact2')->title('Contact')->alias('contacts2')->display(function ()
+{
+    $display = AdminDisplay::table();
+    $display->with('country', 'companies');
+    $display->filters([
+        Filter::related('country_id')->model('App\Country'),
+    ]);
+    $display->columns([
+        Column::image('photo')->label('Photo'),
+        Column::string('fullName')->label('Name'),
+        Column::datetime('birthday')->label('Birthday')->format('d.m.Y'),
+        Column::string('country.title')->label('Country')->append(Column::filter('country_id')),
+        Column::lists('companies.title')->label('Companies'),
+    ]);
+    return $display;
+}
